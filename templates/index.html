@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Price Prediction</title>
+    <script>
+        async function predictPrice() {
+            // Get user input from form fields
+            let year = document.getElementById("year").value;
+            let mileage = document.getElementById("mileage").value;
+            let model = document.getElementById("model").value;
+            let fuelType = document.getElementById("fuelType").value;
+            let doors = document.getElementById("doors").value;
+            let color = document.getElementById("color").value;
+            let price = document.getElementById("price").value;
+
+            // Create an array of features from user input
+            let inputFeatures = [year, mileage, model, fuelType, doors, color, price];
+
+            // Send input features to backend for prediction
+            let response = await fetch("http://127.0.0.1:5000/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ "features": inputFeatures })
+            });
+            
+            let result = await response.json();
+            // Display predicted price
+            document.getElementById("result").innerText = "Predicted Price: ₹" + result.predicted_price.toFixed(2) + "Lakhs";
+        }
+    </script>
+</head>
+<body>
+    <h2>Car Price Prediction</h2>
+    
+    <form id="carDetailsForm">
+        <label for="year">Car Year:</label><br>
+        <input type="number" id="year" name="year" required><br><br>
+
+        <label for="mileage">Mileage (in km):</label><br>
+        <input type="number" id="mileage" name="mileage" required><br><br>
+
+        <label for="model">Car Model (e.g., 1, 2, 3):</label><br>
+        <input type="number" id="model" name="model" required><br><br>
+
+        <label for="fuelType">Fuel Type (e.g., 0 for Petrol, 1 for Diesel):</label><br>
+        <input type="number" id="fuelType" name="fuelType" required><br><br>
+
+        <label for="doors">Number of Doors:</label><br>
+        <input type="number" id="doors" name="doors" required><br><br>
+
+        <label for="color">Car Color (e.g., 0 for Red, 1 for Blue):</label><br>
+        <input type="number" id="color" name="color" required><br><br>
+
+        <label for="price">Price (as reference for prediction):</label><br>
+        <input type="number" id="price" name="price" required><br><br>
+
+        <button type="button" onclick="predictPrice()">Predict Price</button>
+    </form>
+    
+    <p id="result"></p>
+</body>
+</html>
